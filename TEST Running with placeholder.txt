@@ -1,0 +1,50 @@
+Run it via Docker (recommended)
+
+Start: docker-compose up -d --build
+Check health: curl http://localhost:8000/api/test
+Open UI: http://localhost:8000
+View logs: docker-compose logs -f email-platform and docker-compose logs -f db
+Stop: docker-compose down
+Quick “accuracy” smoke test (API-driven)
+
+Create an SMTP provider (example):
+curl -X POST http://localhost:8000/api/smtp-accounts -H "Content-Type: application/json" -d "{\"name\":\"Test SMTP\",\"host\":\"smtp.example.com\",\"port\":587,\"username\":\"user\",\"password\":\"pass\",\"from_email\":\"noreply@yourdomain.com\",\"from_name\":\"Test\",\"use_tls\":true,\"use_ssl\":false}"
+Create a campaign:
+":0.1}"
+Upload recipients CSV:
+Create recipients.csv:
+email,first_name,last_name
+you@yourmail.com,You,Test
+Upload:
+upload-recipients -F "file=@recipients.csv"
+Start sending:
+curl -X POST "http://localhost:8000/api/campaigns/1/start?provider_type=smtp&provider_id=1"
+Monitor:
+Progress: curl http://localhost:8000/api/campaigns/1/progress
+Events: curl "http://localhost:8000/api/campaigns/1/events?page=1&per_page=50"
+Export: curl -o events.csv http://localhost:8000/api/campaigns/1/export
+PostgreSQL data check (inside Docker)
+
+docker exec -it bulk-email-postgres psql -U bulk_email -d bulk_email -c "select count(*) from campaigns;"
+docker exec -it bulk-email-postgres psql -U bulk_email -d bulk_email -c "select count(*) from recipients;"
+If you tell me which provider you’re testing (SMTP vs SendGrid/Mailgun/etc.), I can give you the exact JSON payloads/steps for that provider and a minimal test campaign workflow.
+
+
+
+C:\Users\adnan>curl -X POST http://localhost:8000/api/smtp-accounts -H "Content-Type: application/json" -d "{\"name\":\"Test SMTP\",\"host\":\"smtp.example.com\",\"port\":587,\"username\":\"user\",\"password\":\"pass\",\"from_email\":\"noreply@yourdomain.com\",\"from_name\":\"Test\",\"use_tls\":true,\"use_ssl\":false}"
+{"id":1,"message":"SMTP account created successfully"}
+C:\Users\adnan>curl -X POST "http://localhost:8000/api/campaigns/1/start?provider_type=smtp&provider_id=1"
+{"detail":"Campaign not found"}
+C:\Users\adnan>curl http://localhost:8000/api/campaigns/1/progress
+{"sent":0,"total":0,"failed":0,"rate":0}
+C:\Users\adnan>curl "http://localhost:8000/api/campaigns/1/events?page=1&per_page=50"
+{"events":[],"total":0,"page":1,"per_page":50,"pages":0}
+C:\Users\adnan>curl -o events.csv http://localhost:8000/api/campaigns/1/export
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    31  100    31    0     0    848      0 --:--:-- --:--:-- --:--:--   861
+
+C:\Users\adnan>curl -o events.csv http://localhost:8000/api/campaigns/1/export
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    31  100    31    0     0    509      0 --:--:-- --:--:-- --:--:--   516

@@ -1,0 +1,47 @@
+# FastAPI Backend
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
+
+# Database
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.9
+
+# Email Sending
+aiosmtplib>=3.0.0
+aioimaplib>=1.0.0
+
+# HTTP Client for API Providers
+httpx>=0.25.0
+
+# Templates
+jinja2>=3.1.2
+MarkupSafe>=2.1.0
+
+# CSV Processing
+python-csv>=0.0.13
+
+# Async Support
+aiofiles>=23.2.0
+
+# DNS for email validation
+dnspython>=2.4.0
+
+# Email parsing
+email-validator>=2.1.0
+
+# For AWS SES (optional)
+boto3>=1.33.0
+
+# Security (optional - for production)
+cryptography>=41.0.0
+python-jose>=3.3.0
+passlib>=1.7.4
+bcrypt>=4.1.0
+
+# Timezone handling
+pytz>=2023.3
+
+# Progress tracking
+tqdm>=4.66.0
